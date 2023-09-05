@@ -1,25 +1,24 @@
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Book {
     private int isbn;
     private String title;
     private String author ;
-    private  int qte ;
+    private  int quantity;
 
     private Boolean status;
 
     public Book() {
     }
 
-    public Book(int isbn, String title, String author, int qte, Boolean status) {
+    public Book(int isbn, String title, String author, int quantity, Boolean status) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
-        this.qte = qte;
+        this.quantity = quantity;
         this.status = status;
     }
 
@@ -47,12 +46,12 @@ public class Book {
         this.author = author;
     }
 
-    public int getQte() {
-        return qte;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQte(int qte) {
-        this.qte = qte;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public Boolean getStatus() {
@@ -68,18 +67,18 @@ public class Book {
                 "isbn=" + isbn +
                 "\ntitle='" + title + '\'' +
                 "\nauthor='" + author + '\'' +
-                "\nqte=" + qte +
+                "\nquantity=" + quantity +
                 "\nstatus=" + status +
                 "\n=============================== \n";
     }
 
 
     public void create(Database db, Book book) throws SQLException {
-        String insertedQuery = "INSERT INTO book(title, author, qte,status) values(?,?,?,?)";
+        String insertedQuery = "INSERT INTO book(title, author, quantity,status) values(?,?,?,?)";
         PreparedStatement stmt = db.query(insertedQuery);
         db.bind(stmt, 1, book.getTitle());
         db.bind(stmt, 2 , book.getAuthor());
-        db.bind(stmt, 3 , book.getQte());
+        db.bind(stmt, 3 , book.getQuantity());
         db.bind(stmt , 4, getStatus());
 
         int affectedRows = stmt.executeUpdate();
@@ -100,7 +99,7 @@ public class Book {
             bk.setIsbn(resultSet.getInt("isbn"));
             bk.setTitle(resultSet.getString("title"));
             bk.setAuthor(resultSet.getString("author"));
-            bk.setQte(resultSet.getInt("qte"));
+            bk.setQuantity(resultSet.getInt("quantity"));
             bk.setStatus(resultSet.getBoolean("status"));
 
             System.out.println(bk.toString());
@@ -122,15 +121,63 @@ public class Book {
             int _isbn = resultSet.getInt("isbn");resultSet.getInt("isbn");
             String _title = resultSet.getString("title");
             String _author = resultSet.getString("author");
-            int _qte = resultSet.getInt("qte");
+            int _quantity = resultSet.getInt("quantity");
             Boolean _status = resultSet.getBoolean("status");
-            bk = new Book(_isbn, _title, _author, _qte, _status);
+            bk = new Book(_isbn, _title, _author, _quantity, _status);
+        }
+        return bk;
+    }
+
+    public void search(Database db , String query) throws SQLException {
+        String selectQuery = "SELECT * FROM book WHERE title LIKE ? OR author LIKE ?";
+        PreparedStatement stmt = db.query(selectQuery);
+        db.bind(stmt, 1,"%"+query+"%" );
+        db.bind(stmt, 2,  "%" + query + "%");
+        ResultSet resultSet = stmt.executeQuery();
+
+
+        if(resultSet.next()){
+            do{
+                Book bk = new Book();
+                bk.setIsbn(resultSet.getInt("isbn"));
+                bk.setTitle(resultSet.getString("title"));
+                bk.setAuthor(resultSet.getString("author"));
+                bk.setQuantity(resultSet.getInt("quantity"));
+                bk.setStatus(resultSet.getBoolean("status"));
+                System.out.println(bk.toString());
+
+            }while (resultSet.next());
+        }else{
+            System.out.println("No book found");
         }
 
-        return bk;
+
+
+
 
 
     }
+
+
+    public void delete(Database db , int isbn) throws SQLException {
+
+
+        String selectQuery = "DELETE FROM book WHERE isbn = ?";
+        PreparedStatement stmt = db.query(selectQuery);
+        db.bind(stmt, 1,isbn );
+
+        int rowsAffected = db.executeUpdate(stmt);
+
+        System.out.println(rowsAffected > 0 ? "Delete successful " : "There was an error in this operation");
+
+
+
+    }
+
+
+
+
+
 
 
 

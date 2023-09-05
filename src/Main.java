@@ -1,5 +1,3 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -35,8 +33,23 @@ public class Main {
         if(searchedBook == null){
             System.out.println("Sorry we cannot find this book");
         }else{
-            System.out.println(searchedBook.toString());
+            System.out.println(book.toString());
+            System.out.println("Do you really want to delete this book ?");
+            System.out.println("1- Yes \t 2- No");
+
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice == 1) {
+                book.delete(db, isbn);
+            }
         }
+
+//        System.out.println("Enter the book name or its author's name");
+//        String query = scanner.nextLine();
+
+//        book.search(db, query);
 
  }
 }
