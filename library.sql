@@ -1,4 +1,7 @@
 
+CREATE DATABASE library;
+
+USE library;
 
 CREATE TABLE `book` (
   `isbn` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -7,7 +10,7 @@ CREATE TABLE `book` (
   `quantity` int(11) DEFAULT NULL,
   `status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`isbn`)
-);;
+);
 
 
 
@@ -26,8 +29,8 @@ CREATE TABLE `loan` (
   `return_date` date DEFAULT NULL,
   KEY `isbn` (`isbn`),
   KEY `membership_id` (`membership_id`),
-  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `book` (`isbn`),
-  CONSTRAINT `loan_ibfk_2` FOREIGN KEY (`membership_id`) REFERENCES `client` (`membership_id`)
+  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `book` (`isbn`) ON DELETE CASCADE,
+  CONSTRAINT `loan_ibfk_2` FOREIGN KEY (`membership_id`) REFERENCES `client` (`membership_id`) ON DELETE CASCADE
 );
 
 
@@ -46,10 +49,28 @@ BEGIN
 END;
 
 
+CREATE TRIGGER before_update_book_quantity
+BEFORE UPDATE ON book
+FOR EACH ROW
+BEGIN
+    IF NEW.quantity > 0 THEN
+        SET NEW.status = TRUE;
+    ELSE
+        SET NEW.status = FALSE;
+    END IF;
+END;
+
+
+
+
+
+
 
 
 INSERT INTO client(`name`, `phone_number`) VALUES ('yassine', '0604997339');
 
 INSERT INTO loan VALUES(2, 1, '2023-07-07' , '2023-08-09');
+
+
 
 

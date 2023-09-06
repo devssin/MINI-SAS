@@ -85,6 +85,8 @@ public class Book {
 
         if(affectedRows <= 0){
             throw new SQLException("Insertion failed");
+        }else{
+            System.out.println("the book was created successfully");
         }
     }
 
@@ -118,13 +120,15 @@ public class Book {
         ResultSet resultSet = stmt.executeQuery();
 
         if(resultSet.next()){
-            int _isbn = resultSet.getInt("isbn");resultSet.getInt("isbn");
+            int _isbn = resultSet.getInt("isbn");
             String _title = resultSet.getString("title");
             String _author = resultSet.getString("author");
             int _quantity = resultSet.getInt("quantity");
             Boolean _status = resultSet.getBoolean("status");
             bk = new Book(_isbn, _title, _author, _quantity, _status);
         }
+
+
         return bk;
     }
 
@@ -158,6 +162,31 @@ public class Book {
 
     }
 
+    public void update(Database db , Book book) throws SQLException {
+        String selectQuery = "Update book SET title = ? , author = ? , quantity = ? ,  status = ? WHERE isbn = ?";
+        PreparedStatement stmt = db.query(selectQuery);
+        db.bind(stmt, 1, book.getTitle());
+        db.bind(stmt, 2 , book.getAuthor());
+        db.bind(stmt, 3 , book.getQuantity());
+        db.bind(stmt , 4, getStatus());
+        db.bind(stmt, 5, book.getIsbn());
+
+        int rowsAffected = stmt.executeUpdate();
+
+        if(rowsAffected > 0){
+            System.out.println("Book was updated successfully \nUpdate book : \n");
+            System.out.println(book.toString());
+        }
+        else {
+            System.out.println("There is a problem in this operation");
+        }
+
+
+
+
+    }
+
+
 
     public void delete(Database db , int isbn) throws SQLException {
 
@@ -169,9 +198,6 @@ public class Book {
         int rowsAffected = db.executeUpdate(stmt);
 
         System.out.println(rowsAffected > 0 ? "Delete successful " : "There was an error in this operation");
-
-
-
     }
 
 

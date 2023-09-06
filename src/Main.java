@@ -14,12 +14,15 @@ public class Main {
 //        System.out.println("Enter the name of the book");
 //        book.setAuthor(scanner.nextLine());
 //        System.out.println("Enter the qte");
-//        book.setQte(scanner.nextInt());
+//        book.setQuantity(scanner.nextInt());
 //        scanner.nextLine();
-//        Boolean isAvailabale = book.getQte() > 0 ;
-//        book.setStatus(isAvailabale);
+//        Boolean isAvailable = book.getQuantity() > 0 ;
+//        book.setStatus(isAvailable);
 //
 //        book.create(db, book);
+
+
+
 //
 //        book.list(db);
 
@@ -33,17 +36,28 @@ public class Main {
         if(searchedBook == null){
             System.out.println("Sorry we cannot find this book");
         }else{
-            System.out.println(book.toString());
-            System.out.println("Do you really want to delete this book ?");
-            System.out.println("1- Yes \t 2- No");
+            System.out.println(searchedBook.toString());
 
-
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (choice == 1) {
-                book.delete(db, isbn);
+            System.out.println("Enter the updated name (press enter to leave it as before)");
+            String updatedTitle = scanner.nextLine();
+            if (!updatedTitle.isEmpty()){
+                searchedBook.setTitle(updatedTitle);
             }
+            System.out.println("Enter the updated author name (press enter to leave it as it is)");
+            String updatedAuthor = scanner.nextLine();
+            if (!updatedAuthor.isEmpty()){
+                searchedBook.setAuthor(updatedAuthor);
+            }
+            System.out.println("Enter the updated quantity (enter -1 to leave it as it is)");
+            int updatedQuantity = Integer.parseInt(scanner.nextLine());
+
+
+
+            if (updatedQuantity != -1){
+                searchedBook.setQuantity(updatedQuantity);
+            }
+            searchedBook.update(db, searchedBook);
+
         }
 
 //        System.out.println("Enter the book name or its author's name");
