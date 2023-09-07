@@ -27,6 +27,7 @@ CREATE TABLE `loan` (
   `membership_id` bigint(20) DEFAULT NULL,
   `loan_date` date DEFAULT NULL,
   `return_date` date DEFAULT NULL,
+  `returned` tinyint(1) DEFAULT 0,
   KEY `isbn` (`isbn`),
   KEY `membership_id` (`membership_id`),
   CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `book` (`isbn`) ON DELETE CASCADE,
@@ -61,13 +62,14 @@ BEGIN
 END;
 
 
+CREATE TRIGGER delete_client_after_return AFTER UPDATE
 
 
 
 
 
 
-INSERT INTO client(`name`, `phone_number`) VALUES ('yassine', '0604997339');
+
 
 INSERT INTO loan VALUES(2, 1, '2023-07-07' , '2023-08-09');
 

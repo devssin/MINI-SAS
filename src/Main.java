@@ -27,43 +27,63 @@ public class Main {
 //        book.list(db);
 
 
-        System.out.println("Enter Book isbn");
-        int isbn = scanner.nextInt();
-        scanner.nextLine();
-
-        Book searchedBook = book.findByIsbn(db, isbn);
-
-        if(searchedBook == null){
-            System.out.println("Sorry we cannot find this book");
-        }else{
-            System.out.println(searchedBook.toString());
-
-            System.out.println("Enter the updated name (press enter to leave it as before)");
-            String updatedTitle = scanner.nextLine();
-            if (!updatedTitle.isEmpty()){
-                searchedBook.setTitle(updatedTitle);
-            }
-            System.out.println("Enter the updated author name (press enter to leave it as it is)");
-            String updatedAuthor = scanner.nextLine();
-            if (!updatedAuthor.isEmpty()){
-                searchedBook.setAuthor(updatedAuthor);
-            }
-            System.out.println("Enter the updated quantity (enter -1 to leave it as it is)");
-            int updatedQuantity = Integer.parseInt(scanner.nextLine());
-
-
-
-            if (updatedQuantity != -1){
-                searchedBook.setQuantity(updatedQuantity);
-            }
-            searchedBook.update(db, searchedBook);
-
-        }
+//        System.out.println("Enter Book isbn");
+//        int isbn = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        Book searchedBook = book.findByIsbn(db, isbn);
+//
+//        if(searchedBook == null){
+//            System.out.println("Sorry we cannot find this book");
+//        }else{
+//            System.out.println(searchedBook.toString());
+//
+//            System.out.println("Enter the updated name (press enter to leave it as before)");
+//            String updatedTitle = scanner.nextLine();
+//            if (!updatedTitle.isEmpty()){
+//                searchedBook.setTitle(updatedTitle);
+//            }
+//            System.out.println("Enter the updated author name (press enter to leave it as it is)");
+//            String updatedAuthor = scanner.nextLine();
+//            if (!updatedAuthor.isEmpty()){
+//                searchedBook.setAuthor(updatedAuthor);
+//            }
+//            System.out.println("Enter the updated quantity (enter -1 to leave it as it is)");
+//            int updatedQuantity = Integer.parseInt(scanner.nextLine());
+//
+//
+//
+//            if (updatedQuantity != -1){
+//                searchedBook.setQuantity(updatedQuantity);
+//            }
+//            searchedBook.update(db, searchedBook);
+//
+//        }
 
 //        System.out.println("Enter the book name or its author's name");
 //        String query = scanner.nextLine();
 
 //        book.search(db, query);
+
+
+        // loan book
+        System.out.println("Enter the book isbn");
+        int _isbn = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter the client membership Id");
+        int _membershipId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter Loan date (yyyy-mm-dd)");
+        String _loanDate = scanner.nextLine();
+        System.out.println("Enter Return date (yyyy-mm-dd)");
+        String _returnDate = scanner.nextLine();
+
+        Loan _loan = new Loan(_isbn, _membershipId, _loanDate, _returnDate,false);
+
+        _loan.borrow(db, _loan);
+
+
+
 
  }
 }
