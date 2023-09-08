@@ -1,6 +1,7 @@
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.sql.Statement;
 
 public class Loan {
     private int isbn;
@@ -67,7 +68,7 @@ public class Loan {
 
         try {
             String selectQuery = "INSERT INTO loan(isbn, membership_id, loan_date, return_date) VALUES(?,?,?,?)";
-            PreparedStatement stmt = db.query(selectQuery);
+            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
             db.bind(stmt, 1, loan.getIsbn());
             db.bind(stmt, 2, loan.getMembershipId());
             db.bind(stmt, 3, loan.getLoanDate());
@@ -84,4 +85,41 @@ public class Loan {
         }
     }
 
+    public Boolean findLoan(Database db, int isbn, int membershipId) throws SQLException{
+        Boolean found = false;
+        try{
+            String selectQuery = "SELECT * FROM loan WHERE isbn = ? AND membership_id = ? and returned = 0";
+            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            db.bind(stmt, 1, isbn);
+            db.bind(stmt, 2, membershipId);
+            ResultSet resultSet = db.executeQuery(stmt);
+            if (resultSet.next()){
+                found = true;
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+
+        return  found;
+    }
+
+
+
+    public void returnBook(Database db, int isbn, int membershipId) throws SQLException{
+        try {
+            String selectQuery = "UPDATE loan SET returned = true WHERE isbn = ? and membership_id = ?";
+            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            db.bind(stmt, 1, isbn);
+            db.bind(stmt, 2, membershipId);
+            int rowsAffected = db.executeUpdate(stmt);
+            if (rowsAffected > 0){
+                System.out.println("Book returned Successfully");
+
+            }else{
+                System.out.println("There is a problem with this operation");
+            }
+        }catch(SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+    }
 }

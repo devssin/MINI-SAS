@@ -62,7 +62,12 @@ BEGIN
 END;
 
 
-CREATE TRIGGER delete_client_after_return AFTER UPDATE
+CREATE TRIGGER update_quantity_after_return AFTER UPDATE 
+ON loan
+FOR EACH ROW  
+BEGIN
+  UPDATE book SET quantity = quantity + 1 WHERE book.isbn = NEW.isbn;
+END
 
 
 

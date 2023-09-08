@@ -1,8 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/library";
@@ -29,8 +25,8 @@ public class Database {
         }
     }
 
-    public PreparedStatement query(String query) throws SQLException {
-        return conn.prepareStatement(query);
+    public PreparedStatement query(String query, int returnGeneratedKeys) throws SQLException {
+        return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     }
 
     public void bind(PreparedStatement stmt, int index, Object value) throws SQLException {
