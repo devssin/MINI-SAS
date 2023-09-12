@@ -1,94 +1,191 @@
+import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
+    private static Database db = new Database();
 
     public static void main(String[] args) throws SQLException {
-        Book book = new Book();
-        Database db = new Database();
+
+        int choice = 0;
+
+        System.out.println("==================== Welcome ========================");
+        do {
+            choice = menu();
+            scanner.nextLine();
+
+            switch (choice){
+                case 1:
+                    addBook();
+                    break;
+                case 2 :
+                    listBooks();
+                    break;
+                case 3:
+                    findBookByIsbn();
+                    break;
+                case 4:
+                    search();
+                    break;
+                case 5 :
+                    update();
+                    break;
+                case 6:
+                    delete();
+                    break;
+                case 7:
+                    loanBook();
+                    break;
+                case 8:
+                    returnBook();
+                    break;
+                case 9:
+                    statistics();
+                    break;
+                case 0:
+                    System.out.println("Thanks for using our app ❤️");
+                    System.exit(0);
+                    break;
 
 
 
-//        System.out.println("Enter the name of the book");
-//        book.setTitle(scanner.nextLine());
-//        System.out.println("Enter the name of the book");
-//        book.setAuthor(scanner.nextLine());
-//        System.out.println("Enter the qte");
-//        book.setQuantity(scanner.nextInt());
-//        scanner.nextLine();
-//        Boolean isAvailable = book.getQuantity() > 0 ;
-//        book.setStatus(isAvailable);
-//
-//        book.create(db, book);
 
+            }
+            System.out.println("============================================ \n");
+        }while (choice != 0);
 
-//
-//        book.list(db);
-
-
-//        System.out.println("Enter Book isbn");
-//        int isbn = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        Book searchedBook = book.findByIsbn(db, isbn);
-//
-//        if(searchedBook == null){
-//            System.out.println("Sorry we cannot find this book");
-//        }else{
-//            System.out.println(searchedBook.toString());
-//
-//            System.out.println("Enter the updated name (press enter to leave it as before)");
-//            String updatedTitle = scanner.nextLine();
-//            if (!updatedTitle.isEmpty()){
-//                searchedBook.setTitle(updatedTitle);
-//            }
-//            System.out.println("Enter the updated author name (press enter to leave it as it is)");
-//            String updatedAuthor = scanner.nextLine();
-//            if (!updatedAuthor.isEmpty()){
-//                searchedBook.setAuthor(updatedAuthor);
-//            }
-//            System.out.println("Enter the updated quantity (enter -1 to leave it as it is)");
-//            int updatedQuantity = Integer.parseInt(scanner.nextLine());
-//
-//
-//
-//            if (updatedQuantity != -1){
-//                searchedBook.setQuantity(updatedQuantity);
-//            }
-//            searchedBook.update(db, searchedBook);
-//
-//        }
-
-//        System.out.println("Enter the book name or its author's name");
-//        String query = scanner.nextLine();
-
-//        book.search(db, query);
-
-
-        // loan book
-//        System.out.println("Enter the book isbn");
-//        int _isbn = scanner.nextInt();
-//        scanner.nextLine();
-//        System.out.println("Enter the client membership Id");
-//        int _membershipId = scanner.nextInt();
-//        scanner.nextLine();
-//        System.out.println("Enter Loan date (yyyy-mm-dd)");
-//        String _loanDate = scanner.nextLine();
-//        System.out.println("Enter Return date (yyyy-mm-dd)");
-//        String _returnDate = scanner.nextLine();
-//
-//        Loan _loan = new Loan(_isbn, _membershipId, _loanDate, _returnDate, false);
-//
-//        _loan.borrow(db, _loan);
-
-//        loanBook();
-//        returnBook();
-
-        loanBook();
 
 
     }
+
+    public static void listBooks() throws SQLException {
+        Book _book= new Book();
+        _book.list(db);
+        scanner.nextLine();
+
+    }
+
+
+
+    public static void addBook() throws SQLException {
+
+        System.out.println("Enter book title");
+        String _title = scanner.nextLine();
+        System.out.println("Enter book author");
+        String _author = scanner.nextLine();
+        System.out.println("Enter quantity");
+        int _quantity = scanner.nextInt();
+        Boolean _status = _quantity > 0;
+        Book _book = new Book();
+        _book.setTitle(_title);
+        _book.setAuthor(_author);
+        _book.setQuantity(_quantity);
+        _book.setStatus(_status);
+
+        _book.create(db , _book);
+
+        scanner.nextLine();
+    }
+
+    public static void findBookByIsbn() throws SQLException {
+
+        Book _book = new Book();
+
+        System.out.println("Enter book isbn");
+        int _isbn = scanner.nextInt();
+        scanner.nextLine();
+        _book = _book.findByIsbn(db,_isbn);
+
+        if (_book != null){
+            System.out.println(_book.toString());
+
+        }else {
+            System.out.println("Book not found");
+        }
+        scanner.nextLine();
+    }
+
+    public static void search() throws SQLException {
+        Book _book = new Book();
+        System.out.println("Enter book author or name");
+        String _searchedBook = scanner.nextLine();
+        _book.search(db, _searchedBook);
+        scanner.nextLine();
+    }
+
+    public static void update() throws SQLException {
+        Book _book = new Book();
+
+        System.out.println("Enter book isbn");
+        int _isbn = scanner.nextInt();
+        scanner.nextLine();
+        _book = _book.findByIsbn(db,_isbn);
+
+        if (_book != null){
+            System.out.println(_book.toString());
+            System.out.println("Enter the updated name (press enter to leave it as before)");
+            String updatedTitle = scanner.nextLine();
+            if (!updatedTitle.isEmpty()){
+                _book.setTitle(updatedTitle);
+            }
+            System.out.println("Enter the updated author name (press enter to leave it as it is)");
+            String updatedAuthor = scanner.nextLine();
+            if (!updatedAuthor.isEmpty()){
+                _book.setAuthor(updatedAuthor);
+            }
+            System.out.println("Enter the updated quantity (enter -1 to leave it as it is)");
+            int updatedQuantity = Integer.parseInt(scanner.nextLine());
+            if (updatedQuantity != -1){
+                _book.setQuantity(updatedQuantity);
+            }
+            _book.update(db, _book);
+
+
+        }else {
+            System.out.println("Book not found");
+        }
+
+        scanner.nextLine();
+
+
+
+
+
+    }
+
+
+    public  static void delete() throws SQLException {
+        Book _book = new Book();
+
+        System.out.println("Enter book isbn");
+        int _isbn = scanner.nextInt();
+        scanner.nextLine();
+        _book = _book.findByIsbn(db,_isbn);
+
+        if (_book == null){
+
+            System.out.println("Book not found");
+            return;
+        }
+        System.out.println(_book.toString());
+        System.out.println("Press 1 to confirm delete , press any button to cancel ");
+
+        String choice = scanner.nextLine();
+
+        if (Objects.equals(choice, "1")){
+            _book.delete(db, _isbn);
+        }
+    }
+
+
+
+
+
 
 
     public static void loanBook() throws SQLException {
@@ -97,35 +194,7 @@ public class Main {
         Client client = new Client();
         Loan loan = new Loan();
         int _membershipId = 0;
-
-
-
-//        if (book.findByIsbn(db, _isbn) != null) {
-//            System.out.println("Enter the client membership Id");
-//            int _membershipId = scanner.nextInt();
-//            scanner.nextLine();
-//            if (client.findByMembershipId(db, _membershipId) != null) {
-//                if (!loan.findLoan(db, _isbn, _membershipId)) {
-//                    System.out.println("Enter Loan date (yyyy-mm-dd)");
-//                    String _loanDate = scanner.nextLine();
-//                    System.out.println("Enter Return date (yyyy-mm-dd)");
-//                    String _returnDate = scanner.nextLine();
-//                    loan = new Loan(_isbn, _membershipId, _loanDate, _returnDate, false);
-//                    loan.borrow(db, loan);
-//                } else {
-//                    System.out.println("This client has already borrowed this bock and he hasn't return it yet");
-//                }
-//
-//            } else {
-//                System.out.println("Client not found ");
-//
-//            }
-//
-//
-//        } else {
-//            System.out.println("Book not found ");
-//        }
-        Boolean isValid = true;
+        boolean isValid = true;
         do{
             System.out.println("1-Loan to an existed client : \t 1-Loan to a new client");
             int loanTo = scanner.nextInt();
@@ -172,13 +241,23 @@ public class Main {
         loan = new Loan(_isbn, _membershipId, _loanDate, _returnDate, false);
         loan.borrow(db, loan);
 
+    }
 
 
 
-
-
-
-
+    public static int menu(){
+        System.out.println("1- Add new book :");
+        System.out.println("2- List of available books :");
+        System.out.println("3- Search Book by isbn:");
+        System.out.println("4- Search Book by name or author:");
+        System.out.println("5- Update a book:");
+        System.out.println("6- Delete a book:");
+        System.out.println("7- Borrow a book:");
+        System.out.println("8- Return a book:");
+        System.out.println("9- Statistics Report :" );
+        System.out.println("0- Exit :" );
+        System.out.println("Chose an operation");
+        return scanner.nextInt();
     }
 
 
@@ -228,6 +307,35 @@ public class Main {
         }
 
 
+    }
+
+    public static void statistics() throws SQLException{
+        Book _book = new Book();
+        Loan _loan = new Loan();
+
+        // Specify the file path
+        String filePath = "statistics.txt";
+
+        try {
+            // Create a FileWriter with the specified file path
+            FileWriter fileWriter = new FileWriter(filePath);
+
+            // Create a BufferedWriter to write to the file
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            // Write the data to the file
+            bufferedWriter.write(" Loaned book :" + _loan.getLoanedBooks(db));
+            bufferedWriter.newLine();
+            bufferedWriter.write("Lost books : " + _loan.getLostBooks(db));
+
+
+            // Close the BufferedWriter (this will also close the FileWriter)
+            bufferedWriter.close();
+
+            System.out.println("Statistics has been written to " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

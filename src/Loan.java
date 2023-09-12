@@ -1,7 +1,6 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Loan {
     private int isbn;
@@ -68,7 +67,7 @@ public class Loan {
 
         try {
             String selectQuery = "INSERT INTO loan(isbn, membership_id, loan_date, return_date) VALUES(?,?,?,?)";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, loan.getIsbn());
             db.bind(stmt, 2, loan.getMembershipId());
             db.bind(stmt, 3, loan.getLoanDate());
@@ -89,7 +88,7 @@ public class Loan {
         Boolean found = false;
         try{
             String selectQuery = "SELECT * FROM loan WHERE isbn = ? AND membership_id = ? and returned = 0";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, isbn);
             db.bind(stmt, 2, membershipId);
             ResultSet resultSet = db.executeQuery(stmt);
@@ -108,7 +107,7 @@ public class Loan {
     public void returnBook(Database db, int isbn, int membershipId) throws SQLException{
         try {
             String selectQuery = "UPDATE loan SET returned = true WHERE isbn = ? and membership_id = ?";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, isbn);
             db.bind(stmt, 2, membershipId);
             int rowsAffected = db.executeUpdate(stmt);
@@ -122,4 +121,28 @@ public class Loan {
             System.out.println(exception.getMessage());
         }
     }
+
+    public int getLoanedBooks(Database db) throws SQLException {
+        String selectQuery = "SELECT COUNT(*) FROM loan WHERE returned = false AND return_date > DATE(NOW())";
+        PreparedStatement stmt = db.query(selectQuery);
+        ResultSet resultSet = db.executeQuery(stmt);
+        int count = -1;
+        if(resultSet.next()){
+            count = resultSet.getInt(1);
+        }
+        return count;
+    }
+
+    public int getLostBooks(Database db) throws SQLException {
+        String selectQuery = "SELECT COUNT(*) FROM loan WHERE returned = false AND return_date < DATE(NOW())";
+        PreparedStatement stmt = db.query(selectQuery);
+        ResultSet resultSet = db.executeQuery(stmt);
+        int count = -1;
+        if(resultSet.next()){
+            count = resultSet.getInt(1);
+        }
+        return count;
+    }
 }
+
+

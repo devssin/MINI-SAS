@@ -1,7 +1,6 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Client {
     private int membershipId;
@@ -47,7 +46,7 @@ public class Client {
     public void add(Database db, Client client) throws SQLException {
         try {
             String selectQuery = "INSERT INTO client(name, phone_number) VALUES(?,?)";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS); // Specify Statement.RETURN_GENERATED_KEYS here
+            PreparedStatement stmt = db.query(selectQuery); // Specify Statement.RETURN_GENERATED_KEYS here
             db.bind(stmt, 1, client.getName());
             db.bind(stmt, 2, client.getPhoneNumber());
 
@@ -73,7 +72,7 @@ public class Client {
 
         try {
             String selectQuery = "SELECT * FROM client WHERE membership_id = ?";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt,1 , membershipId);
             ResultSet resultSet = db.executeQuery(stmt);
 

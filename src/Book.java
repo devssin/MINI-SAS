@@ -1,7 +1,6 @@
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Book {
     private int isbn;
@@ -76,7 +75,7 @@ public class Book {
 
     public void create(Database db, Book book) throws SQLException {
         String insertedQuery = "INSERT INTO book(title, author, quantity,status) values(?,?,?,?)";
-        PreparedStatement stmt = db.query(insertedQuery, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = db.query(insertedQuery);
         db.bind(stmt, 1, book.getTitle());
         db.bind(stmt, 2, book.getAuthor());
         db.bind(stmt, 3, book.getQuantity());
@@ -93,8 +92,8 @@ public class Book {
 
     public void list(Database db) throws SQLException {
 
-        String selectQuery = "SELECT * FROM book";
-        PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+        String selectQuery = "SELECT * FROM book WHERE status = true";
+        PreparedStatement stmt = db.query(selectQuery);
         ResultSet resultSet = db.executeQuery(stmt);
 
         while (resultSet.next()) {
@@ -110,11 +109,11 @@ public class Book {
     }
 
 
-    public Book findByIsbn(Database db, int isbn) throws SQLException {
+    public  Book findByIsbn(Database db, int isbn) throws SQLException {
         Book bk = null;
 
         String selectQuery = "SELECT * FROM book WHERE isbn = ?";
-        PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = db.query(selectQuery);
         db.bind(stmt, 1, isbn);
 
         ResultSet resultSet = stmt.executeQuery();
@@ -136,7 +135,7 @@ public class Book {
         try {
 
             String selectQuery = "SELECT * FROM book WHERE title LIKE ? OR author LIKE ?";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, "%" + query + "%");
             db.bind(stmt, 2, "%" + query + "%");
             ResultSet resultSet = stmt.executeQuery();
@@ -166,7 +165,7 @@ public class Book {
     public void update(Database db, Book book) throws SQLException {
         try {
             String selectQuery = "Update book SET title = ? , author = ? , quantity = ? ,  status = ? WHERE isbn = ?";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, book.getTitle());
             db.bind(stmt, 2, book.getAuthor());
             db.bind(stmt, 3, book.getQuantity());
@@ -193,7 +192,7 @@ public class Book {
 
         try {
             String selectQuery = "DELETE FROM book WHERE isbn = ?";
-            PreparedStatement stmt = db.query(selectQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = db.query(selectQuery);
             db.bind(stmt, 1, isbn);
             int rowsAffected = db.executeUpdate(stmt);
             System.out.println(rowsAffected > 0 ? "Delete successful " : "There was an error in this operation");
@@ -203,5 +202,16 @@ public class Book {
 
     }
 
+    public int getAailableBooksCount(Database db) throws SQLException {
+
+        String selectQuery = "SELECT COUNT(*) FROM book WHERE status = true";
+        PreparedStatement stmt = db.query(selectQuery);
+        ResultSet resultSet = db.executeQuery(stmt);
+        int count = -1;
+        if(resultSet.next()){
+            count = resultSet.getInt(1);
+        }
+        return count;
+    }
 
 }

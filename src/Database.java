@@ -25,7 +25,7 @@ public class Database {
         }
     }
 
-    public PreparedStatement query(String query, int returnGeneratedKeys) throws SQLException {
+    public PreparedStatement query(String query) throws SQLException {
         return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     }
 

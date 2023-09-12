@@ -71,7 +71,7 @@ END
 
 
 
-
+SELECT COUNT(*) FROM loan WHERE returned = false AND return_date > DATE(NOW());
 
 
 
