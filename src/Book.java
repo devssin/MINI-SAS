@@ -6,10 +6,8 @@ public class Book {
     private int isbn;
     private String title;
     private String author;
-    private int quantity;
-
+    int quantity
     private Boolean status;
-
     public Book() {
     }
 

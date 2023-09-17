@@ -225,8 +225,13 @@ public class Main {
         System.out.println("Enter the book isbn");
         int _isbn = scanner.nextInt();
         scanner.nextLine();
-        if(book.findByIsbn(db, _isbn) == null){
+        book = book.findByIsbn(db, _isbn);
+        if(book == null){
             System.out.println("Book not found");
+            return;
+        }
+        if(book.getStatus() == false){
+            System.out.println("This book is unavailable");
             return;
         }
 
@@ -241,7 +246,10 @@ public class Main {
         loan = new Loan(_isbn, _membershipId, _loanDate, _returnDate, false);
         loan.borrow(db, loan);
 
+        scanner.nextLine();
     }
+
+
 
 
 
@@ -327,6 +335,8 @@ public class Main {
             bufferedWriter.write(" Loaned book :" + _loan.getLoanedBooks(db));
             bufferedWriter.newLine();
             bufferedWriter.write("Lost books : " + _loan.getLostBooks(db));
+            bufferedWriter.newLine();
+            bufferedWriter.write("Available books: " + _book.getAailableBooksCount(db));
 
 
             // Close the BufferedWriter (this will also close the FileWriter)
